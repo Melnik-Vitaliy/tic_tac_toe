@@ -2,6 +2,15 @@ from gameparts import Board
 from gameparts import FieldIndexError
 from gameparts import CellOccupiedError
 
+
+def save_result(result):
+    # Открыть файл results.txt в режиме "добавление".
+    # Если нужно явно указать кодировку, добавьте параметр encoding='utf-8'.
+    with open('results.txt', 'a', encoding='utf-8') as f:
+        # Записать в файл содержимое переменной result.
+        f.write(result + '\n')
+
+
 def main():
     game = Board()  # Создать игровое поле - объект класса Board.
     current_player = 'X'
@@ -9,9 +18,9 @@ def main():
     running = True
     game.display()  # Отрисовать поле в терминале.
     while running:
-       
+
         print(f'Ход делают {current_player}')
-       
+
         while True:
             try:
                 row = int(input('Введите номер строки: '))
@@ -21,7 +30,8 @@ def main():
                 if column < 0 or row >= game.field_size:
                     raise FieldIndexError
                 if game.board[row][column] != ' ':
-                    raise CellOccupiedError('Ячейка занята. Введите другие координаты.')
+                    raise CellOccupiedError(
+                        'Ячейка занята. Введите другие координаты.')
             except FieldIndexError:
                 # ...выводятся сообщения...
                 print(
@@ -31,15 +41,17 @@ def main():
                 print('Пожалуйста, введите значения для строки и столбца заново.')
                 # ...и цикл начинает свою работу сначала,
                 # предоставляя пользователю ещё одну попытку ввести данные.
+                continue
             except ValueError:
                 print('Буквы вводить нельзя. Только числа.')
                 print('Пожалуйста, введите значения для строки и столбца заново.')
+                continue
             except CellOccupiedError:
                 print('Ячейка занята')
                 print('Введите другие координаты.')
+                continue
             except Exception as e:
                 print(f'Возникла ошибка: {e}')
-                continue
             # Если в блоке try исключения не возникло...
             else:
                 # ...значит, введённые значения прошли все проверки
@@ -51,13 +63,15 @@ def main():
         current_player = 'O' if current_player == 'X' else 'X'
         game.display()
         if game.check_win(current_player):
-            print(f'Победили {current_player}.')
+            result = f'Победили {current_player}.'
+            print(result)
+            save_result(result)
             running = False
         elif game.is_board_full():
-            print('Ничья!')
+            result = 'Ничья!'
+            print(result)
             running = False
-    
+
 
 if __name__ == '__main__':
     main()
-1
