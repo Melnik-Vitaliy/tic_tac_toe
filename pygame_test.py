@@ -1,5 +1,6 @@
 import pygame
 
+
 # Инициализировать библиотеку Pygame.
 pygame.init()
 
